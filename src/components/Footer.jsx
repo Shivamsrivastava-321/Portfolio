@@ -10,10 +10,10 @@ const Footer = () => {
                         © {new Date().getFullYear()} Shivam Srivastava. All rights reserved.
                     </div>
                     <div className="flex space-x-6">
-                        <a href="https://github.com/shivam_srivastava" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <a href="https://github.com/Shivamsrivastava-321" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-white transition-colors">
                             <Github size={20} />
                         </a>
-                        <a href="https://linkedin.com/in/shivam_srivastava" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <a href="https://www.linkedin.com/in/shivam-srivastavaa123/" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-white transition-colors">
                             <Linkedin size={20} />
                         </a>
                         <a href="mailto:shivamsrivastava54321@gmail.com" className="text-gray-400 hover:text-white transition-colors">
