@@ -1,9 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import profileImg from '../assets/profile.jpg';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { ArrowRight, Code, Database, Server, Layers, Cpu, Globe } from 'lucide-react';
 
 const Hero = () => {
     const ref = useRef(null);
+    const [isFlipped, setIsFlipped] = useState(false);
     const { scrollY } = useScroll();
     const y1 = useTransform(scrollY, [0, 500], [0, 200]);
     const y2 = useTransform(scrollY, [0, 500], [0, -150]);
@@ -54,6 +56,53 @@ const Hero = () => {
                     transition={{ duration: 0.5 }}
                     className="relative inline-block"
                 >
+                    {/* Profile Photo Flip Card */}
+                    <div className="flex justify-center mb-12 mt-60 relative z-20">
+                        <div
+                            className="relative w-40 h-40 cursor-pointer perspective-1000"
+                            onClick={() => setIsFlipped(!isFlipped)}
+                            style={{ perspective: '1000px' }}
+                        >
+                            <motion.div
+                                initial={false}
+                                animate={{ rotateY: isFlipped ? 180 : 0 }}
+                                transition={{ duration: 0.6 }}
+                                className="w-full h-full relative"
+                                style={{ transformStyle: 'preserve-3d' }}
+                            >
+                                {/* Front */}
+                                <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-blue-500/30 shadow-2xl shadow-blue-500/20"
+                                    style={{ backfaceVisibility: 'hidden' }}>
+                                    <img
+                                        src={profileImg}
+                                        alt="Shivam Srivastava"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+
+                                {/* Back */}
+                                <div
+                                    className="absolute inset-0 rounded-full bg-slate-900 border-4 border-blue-400 flex flex-col items-center justify-center p-2 text-center"
+                                    style={{
+                                        transform: 'rotateY(180deg)',
+                                        backfaceVisibility: 'hidden'
+                                    }}
+                                >
+                                    <h3 className="text-white text-xs font-bold mb-1">Shivam Srivastava</h3>
+                                    <a
+                                        href="https://www.linkedin.com/in/shivam-srivastavaa123/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-[10px] text-blue-400 hover:text-blue-300 underline break-all leading-tight"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        LinkedIn Profile
+                                    </a>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </div>
+
                     <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-900/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8 backdrop-blur-md">
                         <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
                         Available for Full-time Roles
