@@ -41,10 +41,10 @@ const Education = () => {
                                 <div className="absolute -left-[5px] top-2 w-2.5 h-2.5 rounded-full bg-yellow-500 ring-4 ring-black" />
                                 <h4 className="text-xl font-bold text-white mb-1">Bachelor of Technology</h4>
                                 <p className="text-yellow-400 font-medium mb-1">Computer Science & Engineering</p>
-                                <p className="text-gray-400 text-sm mb-1">Hi-tech Institute of Engineering and Technology</p>
-                                <div className="flex justify-between items-center mt-2">
-                                    <span className="text-gray-500 text-sm">Ghaziabad, Uttar Pradesh</span>
-                                    <span className="px-2 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded text-xs text-yellow-400">CGPA: 6.8</span>
+                                <p className="text-gray-400 text-sm mb-1">Hi-Tech Institute of Engineering & Technology</p>
+                                <div className="flex justify-between items-center mt-3 flex-wrap gap-2">
+                                    <span className="text-gray-500 text-sm">Ghaziabad, Uttar Pradesh • 2025</span>
+                                    <span className="px-2.5 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded text-xs font-semibold text-yellow-400">7 CGPA</span>
                                 </div>
                             </div>
                         </div>

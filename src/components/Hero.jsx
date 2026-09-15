@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import profileImg from '../assets/profile.jpg';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import { ArrowRight, Code, Database, Server, Layers, Cpu, Globe } from 'lucide-react';
+import { ArrowRight, Code, Database, Server, Layers, Cpu, Globe, Cloud, Zap } from 'lucide-react';
 
 const Hero = () => {
     const ref = useRef(null);
@@ -57,7 +57,7 @@ const Hero = () => {
                     className="relative inline-block"
                 >
                     {/* Profile Photo Flip Card */}
-                    <div className="flex justify-center mb-12 mt-60 relative z-20">
+                    <div className="flex justify-center mb-8 mt-24 relative z-20">
                         <div
                             className="relative w-40 h-40 cursor-pointer perspective-1000"
                             onClick={() => setIsFlipped(!isFlipped)}
@@ -103,20 +103,25 @@ const Hero = () => {
                         </div>
                     </div>
 
-                    <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-900/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-8 backdrop-blur-md">
-                        <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                        Available for Full-time Roles
-                    </span>
+                    <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+                        <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-900/20 border border-blue-500/30 text-blue-400 text-xs font-semibold backdrop-blur-md">
+                            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                            Backend-focused Full-Stack Developer
+                        </span>
+                        <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-purple-900/20 border border-purple-500/30 text-purple-300 text-xs font-semibold backdrop-blur-md">
+                            1.6+ Years Professional Experience
+                        </span>
+                    </div>
                 </motion.div>
 
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-6xl md:text-8xl font-bold tracking-tight mb-8"
+                    className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8"
                 >
                     Hi, I'm <br />
-                    <span className="bg-gradient-to-br from-white via-gray-200 to-gray-500 bg-clip-text text-transparent drop-shadow-2xl">
+                    <span className="bg-gradient-to-br from-white via-gray-200 to-gray-400 bg-clip-text text-transparent drop-shadow-2xl">
                         Shivam Srivastava
                     </span>
                 </motion.h1>
@@ -125,34 +130,29 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed"
+                    className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed"
                 >
-                    Backend-focused Developer building <span className="text-white font-semibold">scalable</span> systems
-                    with <span className="text-blue-400 relative inline-block">
-                        MERN Stack
-                        <span className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-400/50" />
-                    </span>,
-                    designing robust <span className="text-purple-400">REST APIs</span>, and optimizing database architecture.
+                    Backend-focused Full-Stack Developer with <span className="text-white font-semibold">1.6+ years</span> of professional experience building scalable and secure web applications using <span className="text-blue-400 font-medium">Node.js, Express.js, MongoDB, MySQL, and React</span>. Experienced in RESTful APIs, JWT/OAuth 2.0, Redis caching, database indexing, AWS deployment, WebSockets, and real-time communication.
                 </motion.p>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.6 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-6"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-5"
                 >
                     <a
                         href="#projects"
                         className="group relative px-8 py-4 bg-blue-600 rounded-full text-white font-semibold flex items-center gap-2 overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20"
                     >
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <span className="relative z-10">View Projects</span>
+                        <span className="relative z-10">Explore Projects</span>
                         <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
 
                     <a
                         href="#contact"
-                        className="px-8 py-4 rounded-full border border-gray-800 bg-gray-900/50 hover:bg-gray-800 text-gray-300 hover:text-white font-medium transition-all hover:scale-105 backdrop-blur-sm"
+                        className="px-8 py-4 rounded-full border border-gray-800 bg-gray-900/60 hover:bg-gray-800 text-gray-300 hover:text-white font-medium transition-all hover:scale-105 backdrop-blur-sm"
                     >
                         Contact Me
                     </a>
@@ -173,23 +173,25 @@ const Hero = () => {
                 </motion.div>
 
                 {/* Tech Stack Cards */}
-                <div className="mt-24 grid grid-cols-2 md:grid-cols-4 gap-4 opacity-80">
+                <div className="mt-20 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3.5 opacity-90">
                     {[
-                        { icon: Server, label: "Node.js", color: "text-green-400" },
-                        { icon: Database, label: "MongoDB", color: "text-yellow-400" },
-                        { icon: Code, label: "React", color: "text-blue-400" },
-                        { icon: Layers, label: "System Design", color: "text-pink-400" }
+                        { icon: Server, label: "Node.js & Express", color: "text-green-400" },
+                        { icon: Database, label: "MongoDB & MySQL", color: "text-yellow-400" },
+                        { icon: Zap, label: "Redis & Caching", color: "text-red-400" },
+                        { icon: Cloud, label: "AWS & Docker", color: "text-orange-400" },
+                        { icon: Code, label: "React & Tailwind", color: "text-blue-400" },
+                        { icon: Layers, label: "WebSockets & APIs", color: "text-purple-400" }
                     ].map((item, idx) => (
                         <motion.div
                             key={idx}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.8 + idx * 0.1 }}
-                            whileHover={{ y: -5, borderColor: 'rgba(255,255,255,0.2)' }}
-                            className="p-4 rounded-2xl bg-gray-900/30 border border-gray-800/50 backdrop-blur-sm flex flex-col items-center gap-3 transition-colors"
+                            transition={{ delay: 0.8 + idx * 0.08 }}
+                            whileHover={{ y: -4, borderColor: 'rgba(59,130,246,0.4)' }}
+                            className="p-3.5 rounded-2xl bg-gray-900/40 border border-gray-800/70 backdrop-blur-sm flex flex-col items-center gap-2 transition-all"
                         >
-                            <item.icon className={`w-6 h-6 ${item.color}`} />
-                            <span className="text-sm font-medium text-gray-400">{item.label}</span>
+                            <item.icon className={`w-5 h-5 ${item.color}`} />
+                            <span className="text-xs font-medium text-gray-300">{item.label}</span>
                         </motion.div>
                     ))}
                 </div>
