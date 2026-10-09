@@ -1,114 +1,176 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Server, Database, Layout, Terminal, CreditCard, Cpu } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const skillsData = [
     {
-        category: "Programming Languages",
+        category: 'Programming Languages',
         icon: Code2,
-        color: "text-blue-400",
-        skills: ["JavaScript", "TypeScript", "Python", "C"]
+        color: '#60a5fa',
+        bg: 'rgba(59,130,246,0.07)',
+        border: 'rgba(59,130,246,0.18)',
+        skills: ['JavaScript', 'TypeScript', 'Python', 'C'],
     },
     {
-        category: "Backend Architecture",
+        category: 'Backend Architecture',
         icon: Server,
-        color: "text-green-400",
-        skills: ["Node.js", "Express.js", "REST API Development", "AWS", "File Handling", "Google Authenticator", "JWT Auth", "WebSockets"]
+        color: '#34d399',
+        bg: 'rgba(52,211,153,0.07)',
+        border: 'rgba(52,211,153,0.18)',
+        skills: ['Node.js', 'Express.js', 'REST API Development', 'AWS', 'File Handling', 'Google Authenticator', 'JWT Auth', 'WebSockets'],
     },
     {
-        category: "Database & Storage",
+        category: 'Database & Storage',
         icon: Database,
-        color: "text-amber-400",
-        skills: ["MongoDB", "MySQL", "PostgreSQL", "Database Design", "Database-Indexing"]
+        color: '#fbbf24',
+        bg: 'rgba(251,191,36,0.07)',
+        border: 'rgba(251,191,36,0.18)',
+        skills: ['MongoDB', 'MySQL', 'PostgreSQL', 'Database Design', 'Database Indexing'],
     },
     {
-        category: "Frontend Development",
+        category: 'Frontend Development',
         icon: Layout,
-        color: "text-cyan-400",
-        skills: ["React", "Tailwind CSS", "Redux-Toolkit", "ShadcnUI", "HTML", "CSS"]
+        color: '#22d3ee',
+        bg: 'rgba(34,211,238,0.07)',
+        border: 'rgba(34,211,238,0.18)',
+        skills: ['React', 'Tailwind CSS', 'Redux Toolkit', 'ShadcnUI', 'HTML', 'CSS'],
     },
     {
-        category: "Tools & DevOps",
+        category: 'Tools & DevOps',
         icon: Terminal,
-        color: "text-purple-400",
-        skills: ["Git", "GitHub", "Docker", "Redis", "Postman", "Render", "Vercel", "VS Code", "Github Copilot"]
+        color: '#a78bfa',
+        bg: 'rgba(167,139,250,0.07)',
+        border: 'rgba(167,139,250,0.18)',
+        skills: ['Git', 'GitHub', 'Docker', 'Redis', 'Postman', 'Render', 'Vercel', 'VS Code', 'GitHub Copilot'],
     },
     {
-        category: "Payment & Communication Integrations",
+        category: 'Payment & Communication',
         icon: CreditCard,
-        color: "text-pink-400",
-        skills: ["Razorpay", "Stripe", "MSG91", "Twilio"]
+        color: '#f472b6',
+        bg: 'rgba(244,114,182,0.07)',
+        border: 'rgba(244,114,182,0.18)',
+        skills: ['Razorpay', 'Stripe', 'Apple IAP', 'MSG91', 'Twilio'],
     },
     {
-        category: "Core Concepts",
+        category: 'Core Concepts',
         icon: Cpu,
-        color: "text-indigo-400",
-        skills: ["Data Structure and Algorithms", "DBMS", "OOPs", "SDLC", "OAuth 2.0", "Firebase Cloud Messaging (FCM)"]
-    }
+        color: '#818cf8',
+        bg: 'rgba(129,140,248,0.07)',
+        border: 'rgba(129,140,248,0.18)',
+        skills: ['Data Structures & Algorithms', 'DBMS', 'OOPs', 'SDLC', 'OAuth 2.0', 'Firebase Cloud Messaging (FCM)'],
+    },
 ];
 
+/* ─── Skill Card ─────────────────────────────────────────────────── */
+const SkillCard = ({ data, index }) => (
+    <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ delay: index * 0.07, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="group flex flex-col p-6 rounded-2xl transition-all duration-300"
+        style={{
+            background: data.bg,
+            border: `1px solid ${data.border}`,
+            boxShadow: `0 0 0 0 ${data.color}`,
+        }}
+        whileHover={{
+            y: -6,
+            boxShadow: `0 8px 32px ${data.color}18`,
+            borderColor: `${data.color}40`,
+            transition: { duration: 0.25 }
+        }}
+    >
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-5">
+            <div
+                className="p-2.5 rounded-xl transition-all duration-300 group-hover:scale-110"
+                style={{ background: `${data.color}15`, border: `1px solid ${data.color}30` }}
+            >
+                <data.icon className="w-5 h-5" style={{ color: data.color }} />
+            </div>
+            <h3 className="text-base font-bold text-white group-hover:text-white transition-colors leading-tight">
+                {data.category}
+            </h3>
+        </div>
+
+        {/* Skills chips */}
+        <div className="flex flex-wrap gap-2">
+            {data.skills.map((skill) => (
+                <span
+                    key={skill}
+                    className="px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-200 cursor-default"
+                    style={{
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        color: '#94a3b8',
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#fff';
+                        e.currentTarget.style.borderColor = `${data.color}40`;
+                        e.currentTarget.style.background = `${data.color}12`;
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#94a3b8';
+                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                    }}
+                >
+                    {skill}
+                </span>
+            ))}
+        </div>
+    </motion.div>
+);
+
+/* ─── Section Component ──────────────────────────────────────────── */
 const Skills = () => {
     return (
-        <section id="skills" className="py-24 bg-gray-950 relative overflow-hidden">
-            {/* Ambient gradients */}
-            <div className="absolute top-1/3 -left-40 w-96 h-96 bg-blue-900/10 rounded-full blur-[128px] pointer-events-none" />
-            <div className="absolute bottom-1/3 -right-40 w-96 h-96 bg-emerald-900/10 rounded-full blur-[128px] pointer-events-none" />
+        <section id="skills" className="py-28 relative overflow-hidden" style={{ background: '#050508' }}>
+            {/* Ambient glows */}
+            <div className="absolute -top-40 left-1/3 w-96 h-96 rounded-full pointer-events-none"
+                style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)', filter: 'blur(60px)' }} />
+            <div className="absolute -bottom-40 right-1/3 w-96 h-96 rounded-full pointer-events-none"
+                style={{ background: 'radial-gradient(circle, rgba(52,211,153,0.06) 0%, transparent 70%)', filter: 'blur(60px)' }} />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+                {/* Section header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                     className="text-center mb-16"
                 >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-4 uppercase tracking-wider">
+                    <div className="section-tag mb-5">
                         Technical Expertise
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-bold mb-4">
-                        <span className="bg-gradient-to-r from-blue-400 via-teal-400 to-green-400 bg-clip-text text-transparent">
+                    <h2 className="text-3xl md:text-5xl font-black mb-4">
+                        <span style={{
+                            background: 'linear-gradient(135deg, #60a5fa, #34d399)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                        }}>
                             Skills & Capabilities
                         </span>
                     </h2>
-                    <p className="text-gray-400 max-w-2xl mx-auto">
-                        A battle-tested stack for building secure, scalable, and high-performance full-stack web applications and microservices.
+                    <p className="text-gray-500 max-w-2xl mx-auto text-base leading-relaxed">
+                        A battle-tested stack for building secure, scalable, high-performance full-stack
+                        applications and microservices.
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {skillsData.map((category, index) => {
-                        const Icon = category.icon;
-                        return (
-                            <motion.div
-                                key={category.category}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.08 }}
-                                className="bg-gray-900/50 backdrop-blur-sm p-6 rounded-2xl border border-gray-800/80 hover:border-blue-500/40 transition-all hover:bg-gray-900/80 flex flex-col justify-between group shadow-lg"
-                            >
-                                <div>
-                                    <div className="flex items-center gap-3 mb-5">
-                                        <div className={`p-2.5 rounded-xl bg-gray-800/70 border border-gray-700/50 ${category.color} group-hover:scale-110 transition-transform`}>
-                                            <Icon className="w-5 h-5" />
-                                        </div>
-                                        <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors">
-                                            {category.category}
-                                        </h3>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        {category.skills.map((skill) => (
-                                            <span
-                                                key={skill}
-                                                className="px-3 py-1 bg-gray-800/70 rounded-lg text-xs font-medium text-gray-300 border border-gray-700/60 hover:border-blue-500/50 hover:text-white transition-all cursor-default"
-                                            >
-                                                {skill}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        );
-                    })}
+                {/* Cards grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {skillsData.map((category, index) => (
+                        <SkillCard key={category.category} data={category} index={index} />
+                    ))}
                 </div>
             </div>
         </section>

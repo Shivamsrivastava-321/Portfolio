@@ -1,204 +1,411 @@
-import React, { useRef, useState } from 'react';
+import React, { Suspense, useRef, useState, useEffect, lazy } from 'react';
 import profileImg from '../assets/profile.jpg';
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import { ArrowRight, Code, Database, Server, Layers, Cpu, Globe, Cloud, Zap } from 'lucide-react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
+import { ArrowRight, ArrowDown, Code, Database, Server, Layers, Cloud, Zap, ExternalLink } from 'lucide-react';
+import { gsap } from 'gsap';
 
+// Lazy-load the heavy Three.js scene
+const FloatingScene = lazy(() => import('./FloatingScene'));
+
+/* ─── Stats ─────────────────────────────────────────────────────── */
+const STATS = [
+    { value: '1.6+', label: 'Years Experience', color: '#60a5fa' },
+    { value: '5+', label: 'Production Projects', color: '#a78bfa' },
+    { value: '10k+', label: 'Users Served', color: '#34d399' },
+    { value: '3', label: 'Companies', color: '#f59e0b' },
+];
+
+/* ─── Tech stack chips ───────────────────────────────────────────── */
+const TECH = [
+    { icon: Server, label: 'Node.js & Express', color: 'text-green-400', bg: 'rgba(52,211,153,0.08)', border: 'rgba(52,211,153,0.2)' },
+    { icon: Database, label: 'MongoDB & MySQL', color: 'text-yellow-400', bg: 'rgba(251,191,36,0.08)', border: 'rgba(251,191,36,0.2)' },
+    { icon: Zap, label: 'Redis & Caching', color: 'text-red-400', bg: 'rgba(248,113,113,0.08)', border: 'rgba(248,113,113,0.2)' },
+    { icon: Cloud, label: 'AWS & Docker', color: 'text-orange-400', bg: 'rgba(251,146,60,0.08)', border: 'rgba(251,146,60,0.2)' },
+    { icon: Code, label: 'React & Tailwind', color: 'text-blue-400', bg: 'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.2)' },
+    { icon: Layers, label: 'WebSockets & APIs', color: 'text-purple-400', bg: 'rgba(167,139,250,0.08)', border: 'rgba(167,139,250,0.2)' },
+];
+
+/* ─── Hero Component ─────────────────────────────────────────────── */
 const Hero = () => {
-    const ref = useRef(null);
+    const sectionRef = useRef(null);
+    const headingRef = useRef(null);
     const [isFlipped, setIsFlipped] = useState(false);
-    const { scrollY } = useScroll();
-    const y1 = useTransform(scrollY, [0, 500], [0, 200]);
-    const y2 = useTransform(scrollY, [0, 500], [0, -150]);
+    const [isMobile, setIsMobile] = useState(false);
+    const mouse = useRef({ x: 0, y: 0 });
 
-    // Mouse parallax for 3D feel
+    // Scroll parallax
+    const { scrollY } = useScroll();
+    const y1 = useTransform(scrollY, [0, 600], [0, 120]);
+    const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+
+    // Mouse spring for background blobs
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
+    const springX = useSpring(mouseX, { damping: 30, stiffness: 120 });
+    const springY = useSpring(mouseY, { damping: 30, stiffness: 120 });
+
+    // Detect mobile
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth < 1024);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
 
     const handleMouseMove = (e) => {
         const { clientX, clientY } = e;
-        const moveX = clientX - window.innerWidth / 2;
-        const moveY = clientY - window.innerHeight / 2;
-        mouseX.set(moveX * 0.05); // Sensitivity
-        mouseY.set(moveY * 0.05);
+        mouseX.set((clientX - window.innerWidth / 2) * 0.03);
+        mouseY.set((clientY - window.innerHeight / 2) * 0.03);
+        mouse.current = {
+            x: (clientX / window.innerWidth) * 2 - 1,
+            y: -((clientY / window.innerHeight) * 2 - 1),
+        };
     };
 
-    const springConfig = { damping: 25, stiffness: 150 };
-    const springX = useSpring(mouseX, springConfig);
-    const springY = useSpring(mouseY, springConfig);
+    // GSAP heading char animation
+    useEffect(() => {
+        if (!headingRef.current) return;
+        const chars = headingRef.current.querySelectorAll('.char');
+        if (!chars.length) return;
+        gsap.fromTo(
+            chars,
+            { y: 80, opacity: 0, rotateX: -40 },
+            {
+                y: 0,
+                opacity: 1,
+                rotateX: 0,
+                duration: 0.9,
+                stagger: 0.025,
+                ease: 'power3.out',
+                delay: 0.4,
+            }
+        );
+    }, []);
+
+    // Split name into animated chars
+    const firstName = 'Shivam';
+    const lastName = 'Srivastava';
 
     return (
         <section
             id="about"
-            ref={ref}
+            ref={sectionRef}
             onMouseMove={handleMouseMove}
-            className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden bg-black selection:bg-blue-500/30"
+            className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-black"
+            style={{ paddingTop: '4rem' }}
         >
-            {/* 3D Background Elements */}
-            <div className="absolute inset-0 z-0 perspective-1000">
+            {/* ── Ambient background blobs ── */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
                 <motion.div
-                    style={{ x: springX, y: springY }}
-                    className="absolute top-20 left-20 w-72 h-72 bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen"
+                    className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full pointer-events-none"
+                    animate={{ opacity: [0.12, 0.18, 0.12] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{
+                        background: 'radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%)',
+                        filter: 'blur(60px)',
+                        x: springX,
+                        y: springY,
+                    }}
                 />
                 <motion.div
-                    style={{ x: useTransform(springX, value => value * -1.5), y: useTransform(springY, value => value * -1.5) }}
-                    className="absolute bottom-20 right-20 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] mix-blend-screen"
+                    className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full pointer-events-none"
+                    animate={{ opacity: [0.1, 0.16, 0.1] }}
+                    transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                    style={{
+                        background: 'radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%)',
+                        filter: 'blur(60px)',
+                        x: useTransform(springX, (v) => v * -1.4),
+                        y: useTransform(springY, (v) => v * -1.4),
+                    }}
                 />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,0,0,0)_0%,#000000_100%)] z-10" />
             </div>
 
-            {/* Grid Pattern */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+            {/* ── Grid overlay ── */}
+            <div
+                className="absolute inset-0 z-0 pointer-events-none"
+                style={{
+                    backgroundImage: 'linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px)',
+                    backgroundSize: '40px 40px',
+                    maskImage: 'radial-gradient(ellipse 80% 60% at 50% 0%, black 60%, transparent 100%)',
+                }}
+            />
 
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative inline-block"
+            {/* ── Three.js 3D Scene (desktop, right side) ── */}
+            {!isMobile && (
+                <div
+                    className="absolute right-0 top-0 h-full pointer-events-none z-1"
+                    style={{ width: '50%' }}
                 >
-                    {/* Profile Photo Flip Card */}
-                    <div className="flex justify-center mb-8 mt-24 relative z-20">
+                    <Suspense fallback={null}>
+                        <FloatingScene mouse={mouse} />
+                    </Suspense>
+                    {/* Right gradient fade so text stays readable */}
+                    <div
+                        className="absolute inset-y-0 left-0 w-1/2 pointer-events-none"
+                        style={{ background: 'linear-gradient(to right, #000 0%, transparent 100%)' }}
+                    />
+                </div>
+            )}
+
+            {/* ── Main content ── */}
+            <motion.div
+                style={{ opacity }}
+                className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center lg:items-center gap-12 lg:gap-0"
+            >
+                {/* Left / center column */}
+                <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+
+                    {/* Profile flip card */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                        className="mb-8 mt-12 lg:mt-0"
+                    >
                         <div
-                            className="relative w-40 h-40 cursor-pointer perspective-1000"
-                            onClick={() => setIsFlipped(!isFlipped)}
+                            className="relative w-28 h-28 cursor-pointer perspective-1000 mx-auto lg:mx-0"
                             style={{ perspective: '1000px' }}
+                            onClick={() => setIsFlipped((f) => !f)}
+                            title="Click to flip"
                         >
                             <motion.div
                                 initial={false}
                                 animate={{ rotateY: isFlipped ? 180 : 0 }}
-                                transition={{ duration: 0.6 }}
-                                className="w-full h-full relative"
-                                style={{ transformStyle: 'preserve-3d' }}
+                                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                                className="w-full h-full relative transform-style-3d"
                             >
-                                {/* Front */}
-                                <div className="absolute inset-0 rounded-full overflow-hidden border-4 border-blue-500/30 shadow-2xl shadow-blue-500/20"
-                                    style={{ backfaceVisibility: 'hidden' }}>
-                                    <img
-                                        src={profileImg}
-                                        alt="Shivam Srivastava"
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-
-                                {/* Back */}
+                                {/* Front — photo */}
                                 <div
-                                    className="absolute inset-0 rounded-full bg-slate-900 border-4 border-blue-400 flex flex-col items-center justify-center p-2 text-center"
+                                    className="absolute inset-0 rounded-full overflow-hidden backface-hidden ring-2 ring-blue-500/30 shadow-2xl"
+                                    style={{ backfaceVisibility: 'hidden', boxShadow: '0 0 40px rgba(59,130,246,0.2)' }}
+                                >
+                                    <img src={profileImg} alt="Shivam Srivastava" className="w-full h-full object-cover" />
+                                </div>
+                                {/* Back — LinkedIn */}
+                                <div
+                                    className="absolute inset-0 rounded-full backface-hidden flex flex-col items-center justify-center p-2 text-center"
                                     style={{
                                         transform: 'rotateY(180deg)',
-                                        backfaceVisibility: 'hidden'
+                                        backfaceVisibility: 'hidden',
+                                        background: 'linear-gradient(135deg, #0f172a, #1e1b4b)',
+                                        border: '2px solid rgba(99,102,241,0.5)',
                                     }}
                                 >
-                                    <h3 className="text-white text-xs font-bold mb-1">Shivam Srivastava</h3>
+                                    <p className="text-white text-[9px] font-bold mb-1 leading-tight">Shivam Srivastava</p>
                                     <a
                                         href="https://www.linkedin.com/in/shivam-srivastavaa123/"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-[10px] text-blue-400 hover:text-blue-300 underline break-all leading-tight"
+                                        className="text-[8px] text-blue-400 hover:text-blue-300 underline leading-tight"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        LinkedIn Profile
+                                        LinkedIn →
                                     </a>
                                 </div>
                             </motion.div>
+                            {/* Outer glow ring */}
+                            <div
+                                className="absolute -inset-1 rounded-full pointer-events-none"
+                                style={{
+                                    background: 'conic-gradient(from 0deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6)',
+                                    opacity: 0.25,
+                                    filter: 'blur(4px)',
+                                    animation: 'spin 6s linear infinite',
+                                }}
+                            />
                         </div>
+                    </motion.div>
+
+                    {/* Status badges */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.15, duration: 0.6 }}
+                        className="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6"
+                    >
+                        <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full text-xs font-semibold"
+                            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', color: '#93c5fd' }}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                            Backend-focused Full-Stack Dev
+                        </span>
+                        <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full text-xs font-semibold"
+                            style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.22)', color: '#c4b5fd' }}>
+                            Open to Opportunities
+                        </span>
+                    </motion.div>
+
+                    {/* Main heading — GSAP character animation */}
+                    <div
+                        ref={headingRef}
+                        className="mb-6 overflow-hidden"
+                        style={{ perspective: '800px' }}
+                    >
+                        <p className="text-gray-500 text-base sm:text-lg font-medium mb-2 tracking-wide"
+                            style={{ animation: 'fade-in 0.6s ease 0.3s both' }}>
+                            Hi, I'm
+                        </p>
+                        {/* First name */}
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-0">
+                            <span className="block">
+                                {firstName.split('').map((char, i) => (
+                                    <span
+                                        key={`fn-${i}`}
+                                        className="char inline-block"
+                                        style={{
+                                            display: 'inline-block',
+                                            opacity: 0,
+                                            background: 'linear-gradient(135deg, #ffffff, #d4d4d8)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            backgroundClip: 'text',
+                                        }}
+                                    >
+                                        {char}
+                                    </span>
+                                ))}
+                            </span>
+                            {/* Last name */}
+                            <span className="block">
+                                {lastName.split('').map((char, i) => (
+                                    <span
+                                        key={`ln-${i}`}
+                                        className="char inline-block"
+                                        style={{
+                                            display: 'inline-block',
+                                            opacity: 0,
+                                            background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            backgroundClip: 'text',
+                                        }}
+                                    >
+                                        {char}
+                                    </span>
+                                ))}
+                            </span>
+                        </h1>
                     </div>
 
-                    <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
-                        <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-900/20 border border-blue-500/30 text-blue-400 text-xs font-semibold backdrop-blur-md">
-                            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                            Backend-focused Full-Stack Developer
-                        </span>
-                        <span className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-purple-900/20 border border-purple-500/30 text-purple-300 text-xs font-semibold backdrop-blur-md">
-                            1.6+ Years Professional Experience
-                        </span>
-                    </div>
-                </motion.div>
-
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8"
-                >
-                    Hi, I'm <br />
-                    <span className="bg-gradient-to-br from-white via-gray-200 to-gray-400 bg-clip-text text-transparent drop-shadow-2xl">
-                        Shivam Srivastava
-                    </span>
-                </motion.h1>
-
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed"
-                >
-                    Backend-focused Full-Stack Developer with <span className="text-white font-semibold">1.6+ years</span> of professional experience building scalable and secure web applications using <span className="text-blue-400 font-medium">Node.js, Express.js, MongoDB, MySQL, and React</span>. Experienced in RESTful APIs, JWT/OAuth 2.0, Redis caching, database indexing, AWS deployment, WebSockets, and real-time communication.
-                </motion.p>
-
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.6 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-5"
-                >
-                    <a
-                        href="#projects"
-                        className="group relative px-8 py-4 bg-blue-600 rounded-full text-white font-semibold flex items-center gap-2 overflow-hidden transition-all hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20"
+                    {/* Description */}
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8, duration: 0.7 }}
+                        className="text-gray-400 text-base sm:text-lg max-w-xl mb-10 leading-relaxed"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <span className="relative z-10">Explore Projects</span>
-                        <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </a>
+                        Full-Stack Developer with{' '}
+                        <span className="text-white font-semibold">1.6+ years</span> of experience building
+                        scalable, secure applications using{' '}
+                        <span className="text-blue-400 font-medium">Node.js, React, MongoDB, AWS</span>
+                        , and real-time systems.
+                    </motion.p>
 
-                    <a
-                        href="#contact"
-                        className="px-8 py-4 rounded-full border border-gray-800 bg-gray-900/60 hover:bg-gray-800 text-gray-300 hover:text-white font-medium transition-all hover:scale-105 backdrop-blur-sm"
+                    {/* CTA buttons */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.0, duration: 0.6 }}
+                        className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-14"
                     >
-                        Contact Me
-                    </a>
-                </motion.div>
+                        <a
+                            href="#projects"
+                            className="group relative px-8 py-3.5 rounded-full font-semibold text-white overflow-hidden flex items-center gap-2 transition-all hover:scale-105"
+                            style={{
+                                background: 'linear-gradient(135deg, #3b82f6, #6d28d9)',
+                                boxShadow: '0 0 30px rgba(59,130,246,0.25)',
+                            }}
+                        >
+                            <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 rounded-full" />
+                            <span className="relative z-10">Explore Projects</span>
+                            <ArrowRight className="relative z-10 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </a>
+                        <a
+                            href="#contact"
+                            className="px-8 py-3.5 rounded-full font-medium text-gray-300 hover:text-white transition-all hover:scale-105"
+                            style={{
+                                background: 'rgba(255,255,255,0.04)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                            }}
+                        >
+                            Contact Me
+                        </a>
+                    </motion.div>
 
-                {/* Floating 3D Tech Icons */}
-                <motion.div
-                    style={{ y: y1 }}
-                    className="absolute top-1/4 left-0 hidden lg:block opacity-20 pointer-events-none"
-                >
-                    <Globe className="w-24 h-24 text-blue-500 animate-spin-slow" />
-                </motion.div>
-                <motion.div
-                    style={{ y: y2 }}
-                    className="absolute bottom-1/4 right-0 hidden lg:block opacity-20 pointer-events-none"
-                >
-                    <Database className="w-32 h-32 text-purple-500 animate-pulse" />
-                </motion.div>
+                    {/* Stats row */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.15, duration: 0.6 }}
+                        className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-lg lg:max-w-none mb-16"
+                    >
+                        {STATS.map((stat, i) => (
+                            <div
+                                key={stat.label}
+                                className="text-center lg:text-left p-3 rounded-xl"
+                                style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}
+                            >
+                                <div className="text-2xl font-black" style={{ color: stat.color }}>{stat.value}</div>
+                                <div className="text-xs text-gray-500 mt-0.5 leading-tight">{stat.label}</div>
+                            </div>
+                        ))}
+                    </motion.div>
+                </div>
 
-                {/* Tech Stack Cards */}
-                <div className="mt-20 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3.5 opacity-90">
-                    {[
-                        { icon: Server, label: "Node.js & Express", color: "text-green-400" },
-                        { icon: Database, label: "MongoDB & MySQL", color: "text-yellow-400" },
-                        { icon: Zap, label: "Redis & Caching", color: "text-red-400" },
-                        { icon: Cloud, label: "AWS & Docker", color: "text-orange-400" },
-                        { icon: Code, label: "React & Tailwind", color: "text-blue-400" },
-                        { icon: Layers, label: "WebSockets & APIs", color: "text-purple-400" }
-                    ].map((item, idx) => (
+                {/* Right column — placeholder space for the 3D scene on desktop */}
+                {!isMobile && <div className="hidden lg:block flex-1" />}
+            </motion.div>
+
+            {/* ── Mobile 3D scene (below content) ── */}
+            {isMobile && (
+                <div className="w-full h-72 relative z-5 -mt-4">
+                    <Suspense fallback={null}>
+                        <FloatingScene mouse={mouse} />
+                    </Suspense>
+                </div>
+            )}
+
+            {/* ── Tech stack chips ── */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3, duration: 0.8 }}
+                className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10"
+            >
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                    {TECH.map((item, idx) => (
                         <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, y: 20 }}
+                            key={item.label}
+                            initial={{ opacity: 0, y: 16 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.8 + idx * 0.08 }}
-                            whileHover={{ y: -4, borderColor: 'rgba(59,130,246,0.4)' }}
-                            className="p-3.5 rounded-2xl bg-gray-900/40 border border-gray-800/70 backdrop-blur-sm flex flex-col items-center gap-2 transition-all"
+                            transition={{ delay: 1.4 + idx * 0.07, duration: 0.5 }}
+                            whileHover={{ y: -4, scale: 1.03 }}
+                            className="flex flex-col items-center gap-2 p-3 rounded-2xl cursor-default transition-all"
+                            style={{ background: item.bg, border: `1px solid ${item.border}` }}
                         >
                             <item.icon className={`w-5 h-5 ${item.color}`} />
-                            <span className="text-xs font-medium text-gray-300">{item.label}</span>
+                            <span className="text-xs font-medium text-gray-300 text-center leading-tight">{item.label}</span>
                         </motion.div>
                     ))}
                 </div>
-            </div>
+            </motion.div>
+
+            {/* ── Scroll indicator ── */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 2, duration: 1 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+            >
+                <motion.div
+                    animate={{ y: [0, 6, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                    <ArrowDown className="w-4 h-4 text-gray-600" />
+                </motion.div>
+                <div className="h-12 w-px" style={{ background: 'linear-gradient(to bottom, rgba(100,116,139,0.6), transparent)' }} />
+            </motion.div>
         </section>
     );
 };
 
 export default Hero;
-
