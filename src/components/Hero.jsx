@@ -37,6 +37,7 @@ const Hero = () => {
     const { scrollY } = useScroll();
     const y1 = useTransform(scrollY, [0, 600], [0, 120]);
     const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+    const topParallaxY = useTransform(scrollY, [0, 400], [0, 260]);
 
     // Mouse spring for background blobs
     const mouseX = useMotionValue(0);
@@ -149,7 +150,7 @@ const Hero = () => {
 
             {/* ── Main content ── */}
             <motion.div
-                style={{ opacity }}
+                style={isMobile ? { opacity, y: topParallaxY } : { opacity }}
                 className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center lg:items-center gap-12 lg:gap-0"
             >
                 {/* Left / center column */}
@@ -176,8 +177,8 @@ const Hero = () => {
                             >
                                 {/* Front — photo */}
                                 <div
-                                    className="absolute inset-0 rounded-full overflow-hidden backface-hidden ring-2 ring-blue-500/30 shadow-2xl"
-                                    style={{ backfaceVisibility: 'hidden', boxShadow: '0 0 40px rgba(59,130,246,0.2)' }}
+                                    className="absolute inset-0 rounded-full overflow-hidden backface-hidden shadow-xl"
+                                    style={{ backfaceVisibility: 'hidden' }}
                                 >
                                     <img src={profileImg} alt="Shivam Srivastava" className="w-full h-full object-cover" />
                                 </div>
@@ -188,7 +189,7 @@ const Hero = () => {
                                         transform: 'rotateY(180deg)',
                                         backfaceVisibility: 'hidden',
                                         background: 'linear-gradient(135deg, #0f172a, #1e1b4b)',
-                                        border: '2px solid rgba(99,102,241,0.5)',
+                                        border: '1px solid rgba(255,255,255,0.1)',
                                     }}
                                 >
                                     <p className="text-white text-[9px] font-bold mb-1 leading-tight">Shivam Srivastava</p>
@@ -203,16 +204,6 @@ const Hero = () => {
                                     </a>
                                 </div>
                             </motion.div>
-                            {/* Outer glow ring */}
-                            <div
-                                className="absolute -inset-1 rounded-full pointer-events-none"
-                                style={{
-                                    background: 'conic-gradient(from 0deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6)',
-                                    opacity: 0.25,
-                                    filter: 'blur(4px)',
-                                    animation: 'spin 6s linear infinite',
-                                }}
-                            />
                         </div>
                     </motion.div>
 
@@ -240,12 +231,12 @@ const Hero = () => {
                         className="mb-6 overflow-hidden"
                         style={{ perspective: '800px' }}
                     >
-                        <p className="text-gray-500 text-base sm:text-lg font-medium mb-2 tracking-wide"
+                        <p className="text-subtle text-base sm:text-lg font-medium mb-2 tracking-wide"
                             style={{ animation: 'fade-in 0.6s ease 0.3s both' }}>
                             Hi, I'm
                         </p>
                         {/* First name */}
-                        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-0">
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none mb-0 heading-premium">
                             <span className="block">
                                 {firstName.split('').map((char, i) => (
                                     <span
@@ -254,7 +245,7 @@ const Hero = () => {
                                         style={{
                                             display: 'inline-block',
                                             opacity: 0,
-                                            background: 'linear-gradient(135deg, #ffffff, #d4d4d8)',
+                                            backgroundImage: 'linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%)',
                                             WebkitBackgroundClip: 'text',
                                             WebkitTextFillColor: 'transparent',
                                             backgroundClip: 'text',
@@ -273,10 +264,11 @@ const Hero = () => {
                                         style={{
                                             display: 'inline-block',
                                             opacity: 0,
-                                            background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+                                            backgroundImage: 'linear-gradient(135deg, #e0f2fe 0%, #7dd3fc 50%, #38bdf8 100%)',
                                             WebkitBackgroundClip: 'text',
                                             WebkitTextFillColor: 'transparent',
                                             backgroundClip: 'text',
+                                            textShadow: '0 0 24px rgba(56, 189, 248, 0.3)',
                                         }}
                                     >
                                         {char}

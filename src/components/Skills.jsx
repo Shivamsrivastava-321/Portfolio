@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Code2, Server, Database, Layout, Terminal, CreditCard, Cpu } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -130,7 +130,7 @@ const SkillCard = ({ data, index }) => (
 /* ─── Section Component ──────────────────────────────────────────── */
 const Skills = () => {
     return (
-        <section id="skills" className="py-28 relative overflow-hidden" style={{ background: '#050508' }}>
+        <section id="skills" className="pt-12 pb-20 md:py-28 relative overflow-hidden" style={{ background: '#050508' }}>
             {/* Ambient glows */}
             <div className="absolute -top-40 left-1/3 w-96 h-96 rounded-full pointer-events-none"
                 style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)', filter: 'blur(60px)' }} />
@@ -150,17 +150,10 @@ const Skills = () => {
                     <div className="section-tag mb-5">
                         Technical Expertise
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-black mb-4">
-                        <span style={{
-                            background: 'linear-gradient(135deg, #60a5fa, #34d399)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text',
-                        }}>
-                            Skills & Capabilities
-                        </span>
+                    <h2 className="text-3xl md:text-5xl font-black mb-4 heading-premium text-ice">
+                        Skills & Capabilities
                     </h2>
-                    <p className="text-gray-500 max-w-2xl mx-auto text-base leading-relaxed">
+                    <p className="text-subtle max-w-2xl mx-auto text-base leading-relaxed">
                         A battle-tested stack for building secure, scalable, high-performance full-stack
                         applications and microservices.
                     </p>

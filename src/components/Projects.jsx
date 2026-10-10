@@ -133,14 +133,14 @@ const ProjectCard = ({ project, index }) => {
             viewport={{ once: true, margin: '-60px' }}
             transition={{ delay: index * 0.09, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
+            onMouseLeave={(e) => {
+                handleMouseLeave();
+                e.currentTarget.style.boxShadow = 'none';
+            }}
             style={{ transform, transformStyle: 'preserve-3d' }}
             className="group relative flex flex-col rounded-2xl overflow-hidden transition-shadow duration-300"
             onMouseEnter={(e) => {
                 e.currentTarget.style.boxShadow = `0 24px 64px ${project.accentColor}18`;
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = 'none';
             }}
         >
             {/* Card border */}

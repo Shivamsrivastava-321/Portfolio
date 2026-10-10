@@ -36,27 +36,33 @@ const Navbar = ({ onTerminalOpen }) => {
     return (
         <nav
             className={cn(
-                'fixed top-0 w-full z-50 transition-all duration-500',
-                scrolled
-                    ? 'border-b'
-                    : 'border-b border-transparent'
+                'fixed w-full z-50 transition-all duration-700 flex justify-center pointer-events-none',
+                scrolled ? 'top-4 px-4' : 'top-0 px-0'
             )}
-            style={scrolled ? {
-                background: 'rgba(0,0,0,0.85)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                borderColor: 'rgba(255,255,255,0.06)',
-            } : {}}
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
+            <div
+                className={cn(
+                    'w-full max-w-7xl mx-auto transition-all duration-700 pointer-events-auto relative',
+                    scrolled ? 'rounded-2xl border px-4 sm:px-6' : 'border-b border-transparent px-4 sm:px-6 lg:px-8'
+                )}
+                style={scrolled ? {
+                    background: 'rgba(10, 15, 30, 0.5)',
+                    backdropFilter: 'blur(24px)',
+                    WebkitBackdropFilter: 'blur(24px)',
+                    borderColor: 'rgba(255,255,255,0.08)',
+                    boxShadow: '0 20px 40px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)'
+                } : {
+                    background: 'rgba(0,0,0,0)'
+                }}
+            >
+                <div className="flex items-center justify-between h-16 sm:h-20 transition-all duration-700">
 
                     {/* Logo */}
                     <a
                         href="#"
-                        className="text-xl font-black tracking-tight shrink-0"
+                        className="text-2xl font-black tracking-tight shrink-0 transition-transform duration-300 hover:scale-105"
                         style={{
-                            background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
+                            background: 'linear-gradient(135deg, #fff, #a5b4fc, #818cf8)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text',
@@ -73,130 +79,139 @@ const Navbar = ({ onTerminalOpen }) => {
                                 <a
                                     key={link.name}
                                     href={link.href}
-                                    className="relative px-3.5 py-2 text-sm font-medium transition-colors duration-200 rounded-lg"
+                                    className="relative px-4 py-2 text-sm font-semibold transition-all duration-300 group"
                                     style={{ color: isActive ? '#fff' : '#94a3b8' }}
                                 >
+                                    <span className="relative z-10 group-hover:text-white transition-colors">{link.name}</span>
+                                    {/* Hover background */}
+                                    <div className="absolute inset-0 rounded-full bg-white/0 group-hover:bg-white/5 transition-colors duration-300" />
                                     {/* Active indicator */}
                                     {isActive && (
-                                        <motion.span
+                                        <motion.div
                                             layoutId="nav-active"
-                                            className="absolute inset-0 rounded-lg"
-                                            style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)' }}
-                                            transition={{ type: 'spring', duration: 0.4, bounce: 0.2 }}
+                                            className="absolute inset-0 rounded-full"
+                                            style={{
+                                                background: 'rgba(255,255,255,0.06)',
+                                                border: '1px solid rgba(255,255,255,0.12)',
+                                                boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+                                            }}
+                                            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                                         />
                                     )}
-                                    <span className="relative z-10">{link.name}</span>
                                 </a>
                             );
                         })}
                     </div>
 
                     {/* Desktop right controls */}
-                    <div className="hidden md:flex items-center gap-3">
+                    <div className="hidden md:flex items-center gap-2 lg:gap-4">
                         {/* Terminal toggle */}
                         <button
                             onClick={onTerminalOpen}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-all hover:scale-105"
+                            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono font-bold transition-all hover:scale-105 hover:-translate-y-0.5 group shadow-lg"
                             style={{
-                                background: 'rgba(59,130,246,0.08)',
-                                border: '1px solid rgba(59,130,246,0.2)',
-                                color: '#60a5fa',
+                                background: 'linear-gradient(135deg, rgba(59,130,246,0.15), rgba(167,139,250,0.15))',
+                                border: '1px solid rgba(167,139,250,0.3)',
+                                color: '#e0f2fe',
                             }}
                             title="Open Terminal (Ctrl+`)"
-                            aria-label="Open developer terminal"
                         >
-                            <TerminalIcon size={13} />
+                            <TerminalIcon size={14} className="text-indigo-400 group-hover:animate-pulse" />
                             <span>terminal</span>
                         </button>
 
                         {/* Social icons */}
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-0.5 border-l pl-2 lg:pl-4" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
                             <a href="https://github.com/Shivamsrivastava-321" target="_blank" rel="noreferrer"
-                                className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-all" aria-label="GitHub">
-                                <Github size={17} />
+                                className="p-2.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-all hover:scale-110" aria-label="GitHub">
+                                <Github size={18} />
                             </a>
                             <a href="https://www.linkedin.com/in/shivam-srivastavaa123/" target="_blank" rel="noreferrer"
-                                className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-all" aria-label="LinkedIn">
-                                <Linkedin size={17} />
-                            </a>
-                            <a href="mailto:shivamsrivastava54321@gmail.com"
-                                className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-all" aria-label="Email">
-                                <Mail size={17} />
+                                className="p-2.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-all hover:scale-110" aria-label="LinkedIn">
+                                <Linkedin size={18} />
                             </a>
                         </div>
                     </div>
 
                     {/* Mobile: terminal + hamburger */}
-                    <div className="flex md:hidden items-center gap-2">
+                    <div className="flex md:hidden items-center gap-3">
                         <button
                             onClick={onTerminalOpen}
-                            className="p-2 rounded-lg transition-colors"
-                            style={{ color: '#60a5fa', background: 'rgba(59,130,246,0.08)' }}
+                            className="p-2.5 rounded-full transition-all hover:scale-105"
+                            style={{ color: '#818cf8', background: 'rgba(129,140,248,0.1)', border: '1px solid rgba(129,140,248,0.2)' }}
                             aria-label="Open terminal"
                         >
                             <TerminalIcon size={18} />
                         </button>
                         <button
                             onClick={() => setIsOpen((o) => !o)}
-                            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                            className="p-2.5 rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition-all"
+                            style={{ border: '1px solid rgba(255,255,255,0.05)' }}
                             aria-label={isOpen ? 'Close menu' : 'Open menu'}
                             aria-expanded={isOpen}
                         >
-                            {isOpen ? <X size={22} /> : <Menu size={22} />}
+                            {isOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
                     </div>
                 </div>
-            </div>
 
-            {/* Mobile menu */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                        className="md:hidden overflow-hidden border-b"
-                        style={{ background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(20px)', borderColor: 'rgba(255,255,255,0.06)' }}
-                    >
-                        <div className="px-4 py-4 space-y-1">
-                            {NAV_LINKS.map((link) => {
-                                const isActive = activeSection === link.id;
-                                return (
-                                    <a
-                                        key={link.name}
-                                        href={link.href}
-                                        onClick={() => setIsOpen(false)}
-                                        className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
-                                        style={{
-                                            color: isActive ? '#fff' : '#94a3b8',
-                                            background: isActive ? 'rgba(59,130,246,0.1)' : 'transparent',
-                                            border: isActive ? '1px solid rgba(59,130,246,0.2)' : '1px solid transparent',
-                                        }}
-                                    >
-                                        {link.name}
-                                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
+                {/* Mobile menu dropdown */}
+                <AnimatePresence>
+                    {isOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
+                            className="md:hidden absolute top-[calc(100%+0.5rem)] left-0 right-0 rounded-2xl overflow-hidden border shadow-2xl"
+                            style={{
+                                background: 'rgba(10, 15, 30, 0.85)',
+                                backdropFilter: 'blur(24px)',
+                                WebkitBackdropFilter: 'blur(24px)',
+                                borderColor: 'rgba(255,255,255,0.08)'
+                            }}
+                        >
+                            <div className="p-3 space-y-1">
+                                {NAV_LINKS.map((link) => {
+                                    const isActive = activeSection === link.id;
+                                    return (
+                                        <a
+                                            key={link.name}
+                                            href={link.href}
+                                            onClick={() => setIsOpen(false)}
+                                            className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all"
+                                            style={{
+                                                color: isActive ? '#fff' : '#94a3b8',
+                                                background: isActive ? 'rgba(255,255,255,0.06)' : 'transparent',
+                                                border: isActive ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
+                                            }}
+                                        >
+                                            {link.name}
+                                            {isActive && (
+                                                <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#818cf8', boxShadow: '0 0 10px #818cf8' }} />
+                                            )}
+                                        </a>
+                                    );
+                                })}
+                                <div className="flex justify-center gap-6 pt-4 pb-2 px-4 border-t mt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                                    <a href="https://github.com/Shivamsrivastava-321" target="_blank" rel="noreferrer"
+                                        className="text-gray-400 hover:text-white transition-colors hover:scale-110" aria-label="GitHub">
+                                        <Github size={20} />
                                     </a>
-                                );
-                            })}
-                            <div className="flex items-center gap-4 pt-3 px-4 border-t mt-2" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                                <a href="https://github.com/Shivamsrivastava-321" target="_blank" rel="noreferrer"
-                                    className="text-gray-500 hover:text-white transition-colors" aria-label="GitHub">
-                                    <Github size={18} />
-                                </a>
-                                <a href="https://www.linkedin.com/in/shivam-srivastavaa123/" target="_blank" rel="noreferrer"
-                                    className="text-gray-500 hover:text-white transition-colors" aria-label="LinkedIn">
-                                    <Linkedin size={18} />
-                                </a>
-                                <a href="mailto:shivamsrivastava54321@gmail.com"
-                                    className="text-gray-500 hover:text-white transition-colors" aria-label="Email">
-                                    <Mail size={18} />
-                                </a>
+                                    <a href="https://www.linkedin.com/in/shivam-srivastavaa123/" target="_blank" rel="noreferrer"
+                                        className="text-gray-400 hover:text-white transition-colors hover:scale-110" aria-label="LinkedIn">
+                                        <Linkedin size={20} />
+                                    </a>
+                                    <a href="mailto:shivamsrivastava54321@gmail.com"
+                                        className="text-gray-400 hover:text-white transition-colors hover:scale-110" aria-label="Email">
+                                        <Mail size={20} />
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </nav>
     );
 };
