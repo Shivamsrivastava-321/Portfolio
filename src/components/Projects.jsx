@@ -2,6 +2,14 @@ import React, { useRef } from 'react';
 import { motion, useMotionTemplate, useMotionValue, useSpring } from 'framer-motion';
 import { ExternalLink, Github, Server, Database, Layout, Zap, ShoppingBag, Briefcase } from 'lucide-react';
 
+// Project screenshots
+import imgGoingOut   from '../assets/GoingOutCo_ Discover the Night.png';
+import imgEzydash    from '../assets/EzyDash Campus Life, Simplified.png';
+import imgHrms       from '../assets/HRMS Lite Futuristic Dashboard Showcase.png';
+import imgEcommerce  from '../assets/ecommerce_project_3d (1).png';
+import imgJob        from '../assets/job_portal_project_3d.png';
+import imgHotel      from '../assets/hotel_booking_project_3d.png';
+
 const projects = [
     {
         title: 'Going-OutCO',
@@ -18,6 +26,7 @@ const projects = [
         gradient: 'linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%)',
         accentColor: '#60a5fa',
         icon: Zap,
+        image: imgGoingOut,
     },
     {
         title: 'Ezydash',
@@ -34,6 +43,7 @@ const projects = [
         gradient: 'linear-gradient(135deg, #064e3b 0%, #0c4a6e 100%)',
         accentColor: '#34d399',
         icon: Server,
+        image: imgEzydash,
     },
     {
         title: 'HRMS Lite',
@@ -50,6 +60,7 @@ const projects = [
         gradient: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
         accentColor: '#818cf8',
         icon: Layout,
+        image: imgHrms,
     },
     {
         title: 'E-Commerce Platform',
@@ -66,6 +77,7 @@ const projects = [
         gradient: 'linear-gradient(135deg, #4c0519 0%, #831843 100%)',
         accentColor: '#f472b6',
         icon: ShoppingBag,
+        image: imgEcommerce,
     },
     {
         title: 'Job Portal',
@@ -82,6 +94,7 @@ const projects = [
         gradient: 'linear-gradient(135deg, #431407 0%, #7c2d12 100%)',
         accentColor: '#fb923c',
         icon: Briefcase,
+        image: imgJob,
     },
     {
         title: 'Hotel Booking System',
@@ -98,6 +111,7 @@ const projects = [
         gradient: 'linear-gradient(135deg, #022c22 0%, #134e4a 100%)',
         accentColor: '#2dd4bf',
         icon: Database,
+        image: imgHotel,
     },
 ];
 
@@ -153,37 +167,37 @@ const ProjectCard = ({ project, index }) => {
                 style={{ border: '1px solid rgba(255,255,255,0.06)' }}
             />
 
-            {/* Visual header */}
+            {/* Visual header — project screenshot */}
             <div
-                className="relative h-44 overflow-hidden flex items-center justify-center"
-                style={{ background: 'rgba(10,10,20,0.8)' }}
+                className="relative h-48 overflow-hidden"
+                style={{ background: 'rgba(6,6,14,1)' }}
             >
-                {/* Gradient glow in header */}
+                {project.image ? (
+                    <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                        style={{ opacity: 0.88 }}
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center" style={{ background: project.gradient }}>
+                        <Icon className="w-10 h-10 text-white/80" />
+                    </div>
+                )}
+
+                {/* Gradient scrim — bottom fade into card body */}
                 <div
-                    className="absolute inset-0 opacity-40 group-hover:opacity-70 transition-opacity duration-500"
-                    style={{ background: project.gradient }}
-                />
-                {/* Subtle grid in header */}
-                <div
-                    className="absolute inset-0 opacity-20"
+                    className="absolute inset-0 pointer-events-none"
                     style={{
-                        backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)',
-                        backgroundSize: '20px 20px',
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(8,8,18,0.72) 85%, rgba(8,8,18,1) 100%)',
                     }}
                 />
 
-                {/* Icon */}
+                {/* Accent color tint on hover */}
                 <div
-                    className="relative z-10 p-4 rounded-2xl transition-all duration-500 group-hover:scale-110"
-                    style={{
-                        background: 'rgba(0,0,0,0.5)',
-                        border: `1px solid ${project.accentColor}30`,
-                        backdropFilter: 'blur(12px)',
-                        transform: 'translateZ(30px)',
-                    }}
-                >
-                    <Icon className="w-9 h-9 text-white/90" />
-                </div>
+                    className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+                    style={{ background: project.gradient }}
+                />
 
                 {/* Badge */}
                 <div
@@ -192,14 +206,11 @@ const ProjectCard = ({ project, index }) => {
                         background: project.badgeBg,
                         border: `1px solid ${project.badgeBorder}`,
                         color: project.badgeColor,
-                        backdropFilter: 'blur(8px)',
+                        backdropFilter: 'blur(10px)',
                     }}
                 >
                     {project.badge}
                 </div>
-
-                {/* Gloss overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
 
             {/* Body */}
