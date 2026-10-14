@@ -21,7 +21,7 @@ const projects = [
         description:
             'Scalable full-stack application built with Node.js, Express.js, React, and AWS, featuring secure authentication, subscription and payment workflows, Redis caching, database optimization, rate limiting, and WebSockets. Integrated Razorpay, Apple IAP, FCM, and MSG91 for 10,000+ users.',
         tech: ['Node.js', 'Express.js', 'React', 'AWS', 'Redis', 'WebSockets', 'Razorpay', 'Apple IAP', 'FCM', 'MSG91'],
-        link: 'https://github.com/Shivamsrivastava-321',
+        link: 'https://play.google.com/store/apps/details?id=com.goingOutCo.GoingOut&hl=en_IN',
         github: 'https://github.com/Shivamsrivastava-321',
         gradient: 'linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%)',
         accentColor: '#60a5fa',
@@ -38,7 +38,7 @@ const projects = [
         description:
             'Full-stack MERN application with MySQL for managing events, properties, users, carts, transactions, and location-based services. Implemented Stripe payments, Google OAuth 2.0, Twilio OTP, FCM notifications, WebSockets, Redis, and AWS Load Balancer.',
         tech: ['MERN Stack', 'MySQL', 'Redis', 'Stripe', 'Google OAuth', 'Twilio OTP', 'FCM', 'WebSockets', 'AWS ALB'],
-        link: 'https://github.com/Shivamsrivastava-321',
+        link: 'https://play.google.com/store/apps/details?id=com.ezydash&hl=en_IN',
         github: 'https://github.com/Shivamsrivastava-321',
         gradient: 'linear-gradient(135deg, #064e3b 0%, #0c4a6e 100%)',
         accentColor: '#34d399',
